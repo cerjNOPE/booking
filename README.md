@@ -50,12 +50,12 @@ python -m scripts.seed_places               #Добавление тестовы
 pytest tests -q
 ```
 ```bash
-pytest tests --cov=app
+pytest tests --cov=app --cov-report=term-missing
 ```
 или
 ```bash
 .\.venv\Scripts\python.exe -m  pytest tests -q
 ```
 ```bash
-.\.venv\Scripts\python.exe -m  pytest tests --cov=app
+.\.venv\Scripts\python.exe -m  pytest tests --cov=app --cov-report=term-missing
 ```
