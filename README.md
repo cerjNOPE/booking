@@ -17,7 +17,7 @@ pip install -r requirements.txt
 python run.py
 ```
 
-5. Открыть веб-страницу:
+4. Открыть веб-страницу:
 `https://localhost/`
 
 ## Настройки БД по умолчанию
