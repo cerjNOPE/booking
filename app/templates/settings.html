@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include "_header.html" %}
+
+<main class="page">
+    <section class="panel">
+        <h1>{{ t('settings.title') }}</h1>
+
+        {% if saved %}<div class="alert alert-success" role="alert">{{ t('settings.saved') }}</div>{% endif %}
+        {% if password_changed %}<div class="alert alert-success" role="alert">{{ t('settings.password_changed') }}</div>{% endif %}
+
+        <div class="settings-grid">
+            <section class="settings-block">
+                <h2>{{ t('settings.profile') }}</h2>
+                {% if profile_error %}<div class="alert alert-error" role="alert">{{ profile_error }}</div>{% endif %}
+                <form action="/web/settings/profile" method="post" class="auth-form" novalidate>
+                    <div class="field">
+                        <label for="settings-surname">{{ t('settings.surname') }}</label>
+                        <input
+                            id="settings-surname"
+                            name="surname"
+                            type="text"
+                            value="{{ surname }}"
+                            class="{% if profile_invalid == 'surname' %}input-error{% endif %}"
+                        >
+                    </div>
+                    <div class="field">
+                        <label for="settings-phone">{{ t('settings.phone') }}</label>
+                        <input
+                            id="settings-phone"
+                            name="phone"
+                            type="tel"
+                            value="{{ phone }}"
+                            placeholder="8 (999) 123-45-67"
+                            inputmode="tel"
+                            data-phone-mask
+                            class="{% if profile_invalid == 'phone' %}input-error{% endif %}"
+                        >
+                    </div>
+                    <div class="field">
+                        <label for="settings-email">{{ t('settings.email') }}</label>
+                        <input
+                            id="settings-email"
+                            name="email"
+                            type="email"
+                            value="{{ email }}"
+                            class="{% if profile_invalid == 'email' %}input-error{% endif %}"
+                        >
+                    </div>
+                    <button type="submit" class="btn btn-primary">{{ t('settings.save_profile') }}</button>
+                </form>
+            </section>
+
+            <section class="settings-block">
+                <h2>{{ t('settings.password') }}</h2>
+                {% if password_error %}<div class="alert alert-error" role="alert">{{ password_error }}</div>{% endif %}
+                <form action="/web/settings/password" method="post" class="auth-form" novalidate>
+                    <div class="field">
+                        <label for="old-password">{{ t('settings.old_password') }}</label>
+                        <div class="password-field">
+                            <input
+                                id="old-password"
+                                name="old_password"
+                                type="password"
+                                class="{% if password_invalid == 'old_password' %}input-error{% endif %}"
+                            >
+                            <button type="button" class="eye-btn" onclick="togglePassword('old-password', this)" aria-label="toggle password">👁</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="new-password">{{ t('settings.new_password') }}</label>
+                        <div class="password-field">
+                            <input
+                                id="new-password"
+                                name="new_password"
+                                type="password"
+                                data-password-check
+                                class="{% if password_invalid == 'new_password' %}input-error{% endif %}"
+                            >
+                            <button type="button" class="eye-btn" onclick="togglePassword('new-password', this)" aria-label="toggle password">👁</button>
+                        </div>
+                        <ul class="password-requirements">
+                            <li data-req="length">{{ t('password.req_length') }}</li>
+                            <li data-req="letter">{{ t('password.req_letter') }}</li>
+                            <li data-req="digit">{{ t('password.req_digit') }}</li>
+                            <li data-req="special">{{ t('password.req_special') }}</li>
+                        </ul>
+                    </div>
+                    <div class="field">
+                        <label for="confirm-password">{{ t('settings.confirm_password') }}</label>
+                        <div class="password-field">
+                            <input
+                                id="confirm-password"
+                                name="confirm"
+                                type="password"
+                                class="{% if password_invalid == 'confirm' %}input-error{% endif %}"
+                            >
+                            <button type="button" class="eye-btn" onclick="togglePassword('confirm-password', this)" aria-label="toggle password">👁</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">{{ t('settings.save_password') }}</button>
+                </form>
+            </section>
+        </div>
+
+        <section class="api-keys">
+            <div class="api-keys-header">
+                <div>
+                    <h2>{{ t('settings.apikeys') }}</h2>
+                    <p class="hint">{{ t('settings.apikeys_hint') }}</p>
+                </div>
+                <form action="/web/api-keys" method="post">
+                    <button type="submit" class="btn btn-primary btn-inline">{{ t('settings.create_key') }}</button>
+                </form>
+            </div>
+
+            {% if key_error %}<div class="alert alert-error" role="alert">{{ key_error }}</div>{% endif %}
+
+            {% if new_key %}
+            <div class="alert alert-success" role="alert">
+                <strong>{{ t('settings.new_key_title') }}</strong>
+                <code class="key-value">{{ new_key }}</code>
+                <span>{{ t('settings.new_key_hint') }}</span>
+            </div>
+            {% endif %}
+
+            {% if api_keys %}
+            <ul class="key-list">
+                {% for key in api_keys %}
+                <li class="key-item {% if not key.is_active %}key-revoked{% endif %}">
+                    <div class="key-info">
+                        <code>{{ key.key_prefix }}…</code>
+                        <span class="key-meta">
+                            {{ key.created_at.strftime('%d.%m.%Y %H:%M') }} ·
+                            {% if key.is_active %}
+                            <span class="key-status">{{ t('settings.active') }}</span>
+                            {% else %}
+                            <span class="key-status revoked">{{ t('settings.revoked') }}</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                    {% if key.is_active %}
+                    <form action="/web/api-keys/{{ key.id }}/revoke" method="post">
+                        <button type="submit" class="btn btn-danger btn-inline">{{ t('common.revoke') }}</button>
+                    </form>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="empty-state">{{ t('settings.no_keys') }}</p>
+            {% endif %}
+        </section>
+    </section>
+</main>
+
+{% include "_footer.html" %}
+{% endblock %}

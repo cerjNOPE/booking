@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include "_header.html" %}
+
+<main class="page">
+    <section class="panel form-panel">
+        <h1>{{ t('booking.title') }}</h1>
+
+        {% if error %}<div class="alert alert-error" role="alert">{{ error }}</div>{% endif %}
+
+        {% if places %}
+        <form
+            action="/web/bookings"
+            method="post"
+            class="booking-form"
+            novalidate
+            data-past-date-error="{{ t('booking.error_past_dates') }}"
+            data-dates-error="{{ t('booking.error_dates') }}"
+            data-max-days-error="{{ t('booking.error_max_days') }}"
+        >
+            <div class="field">
+                <label for="place-select">{{ t('booking.address') }}</label>
+                <select id="place-select" name="place_id">
+                    {% for place in places %}
+                    <option
+                        value="{{ place.id }}"
+                        data-capacity="{{ place.capacity }}"
+                        {% if selected and place.id == selected.id %}selected{% endif %}
+                    >{{ place.address }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="capacity-output">{{ t('booking.capacity') }}</label>
+                <input id="capacity-output" type="text" value="{{ capacity }}" readonly>
+            </div>
+
+            <div class="field">
+                <label for="check-in">{{ t('booking.check_in') }}</label>
+                <input
+                    id="check-in"
+                    name="check_in"
+                    type="date"
+                    min="{{ today }}"
+                    value="{{ check_in }}"
+                    class="input-highlight"
+                >
+            </div>
+
+            <div class="field">
+                <label for="check-out">{{ t('booking.check_out') }}</label>
+                <input
+                    id="check-out"
+                    name="check_out"
+                    type="date"
+                    min="{{ today }}"
+                    value="{{ check_out }}"
+                    class="input-highlight"
+                >
+            </div>
+
+            <div class="field">
+                <label for="guests">{{ t('booking.guests') }}</label>
+                <input
+                    id="guests"
+                    name="guests"
+                    type="number"
+                    min="1"
+                    max="{{ capacity }}"
+                    value="{{ guests }}"
+                >
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-wide">{{ t('booking.submit') }}</button>
+        </form>
+        {% else %}
+        <p class="empty-state">{{ t('home.no_places') }}</p>
+        {% endif %}
+    </section>
+</main>
+
+{% include "_footer.html" %}
+{% endblock %}

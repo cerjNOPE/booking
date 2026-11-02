@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include "_header.html" %}
+
+<main class="page">
+    <section class="panel">
+        <h1>{{ t('bookings.number', n=booking.booking_number) }}</h1>
+
+        {% if message %}<div class="alert alert-success" role="alert">{{ message }}</div>{% endif %}
+
+        <dl class="detail-list">
+            <dt>{{ t('bookings.number_label') }}</dt>
+            <dd>{{ booking.booking_number }}</dd>
+
+            <dt>{{ t('booking.address') }}</dt>
+            <dd>{{ booking.place.address }}</dd>
+
+            <dt>{{ t('bookings.check_in') }}</dt>
+            <dd>{{ booking.checkIn.strftime('%d.%m.%Y') }}</dd>
+
+            <dt>{{ t('bookings.check_out') }}</dt>
+            <dd>{{ booking.checkOut.strftime('%d.%m.%Y') }}</dd>
+
+            <dt>{{ t('bookings.guests') }}</dt>
+            <dd>{{ booking.guestsCount }}</dd>
+
+            <dt>{{ t('bookings.status') }}</dt>
+            <dd><span class="status status-{{ booking.status }}">{{ t('status.' ~ booking.status) }}</span></dd>
+        </dl>
+
+        <div class="detail-actions">
+            <a href="/bookings" class="btn btn-outline">{{ t('common.back') }}</a>
+            {% if booking.status == 'active' %}
+            <form action="/bookings/{{ booking.id }}/cancel" method="post" onsubmit="return confirm('{{ t('bookings.cancel_confirm') }}')">
+                <button type="submit" class="btn btn-danger">{{ t('bookings.cancel') }}</button>
+            </form>
+            {% endif %}
+        </div>
+    </section>
+</main>
+
+{% include "_footer.html" %}
+{% endblock %}

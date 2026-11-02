@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-top">
+        <div class="brand"><span class="brand-icon">⛺</span><span>{{ t('app.name') }}</span></div>
+        <a href="/lang/{{ 'en' if lang == 'ru' else 'ru' }}" class="lang-switch">{{ 'EN' if lang == 'ru' else 'RU' }}</a>
+    </div>
+
+    <div class="auth-card">
+        <h1>{{ t('register.title') }}</h1>
+        <p class="subtitle">{{ t('register.subtitle') }}</p>
+
+        {% if error %}
+        <div class="alert alert-error" role="alert">
+            <span>{{ error }}</span>
+            {% if offer_login %}<a href="/" class="alert-link">{{ t('register.offer_login') }}</a>{% endif %}
+        </div>
+        {% endif %}
+
+        <form action="/web/register" method="post" class="auth-form" novalidate>
+            <div class="field">
+                <label for="surname">{{ t('register.surname') }}</label>
+                <input
+                    id="surname"
+                    name="surname"
+                    type="text"
+                    value="{{ surname }}"
+                    autocomplete="family-name"
+                    class="{% if invalid == 'surname' %}input-error{% endif %}"
+                >
+                <small class="hint">{{ t('register.surname_hint') }}</small>
+            </div>
+
+            <div class="field">
+                <label for="phone">{{ t('register.phone') }}</label>
+                <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    value="{{ phone }}"
+                    placeholder="8 (999) 123-45-67"
+                    autocomplete="tel"
+                    inputmode="tel"
+                    data-phone-mask
+                    class="{% if invalid == 'phone' %}input-error{% endif %}"
+                >
+            </div>
+
+            <div class="field">
+                <label for="email">{{ t('register.email') }}</label>
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value="{{ email }}"
+                    placeholder="name@example.com"
+                    autocomplete="email"
+                    pattern="[^@\s]+@[^@\s]+\.[A-Za-zА-Яа-я]{2,}"
+                    class="{% if invalid == 'email' %}input-error{% endif %}"
+                >
+            </div>
+
+            <div class="field">
+                <label for="register-password">{{ t('register.password') }}</label>
+                <div class="password-field">
+                    <input
+                        id="register-password"
+                        name="password"
+                        type="password"
+                        value="{{ password }}"
+                        autocomplete="new-password"
+                        data-password-check
+                        class="{% if invalid == 'password' %}input-error{% endif %}"
+                    >
+                    <button type="button" class="eye-btn" onclick="togglePassword('register-password', this)" aria-label="toggle password">👁</button>
+                </div>
+                <ul class="password-requirements">
+                    <li data-req="length">{{ t('password.req_length') }}</li>
+                    <li data-req="letter">{{ t('password.req_letter') }}</li>
+                    <li data-req="digit">{{ t('password.req_digit') }}</li>
+                    <li data-req="special">{{ t('password.req_special') }}</li>
+                </ul>
+            </div>
+
+            <button type="submit" class="btn btn-primary">{{ t('register.submit') }}</button>
+        </form>
+
+        <p class="switch">{{ t('register.have_account') }} <a href="/">{{ t('register.login') }}</a></p>
+    </div>
+</div>
+{% endblock %}

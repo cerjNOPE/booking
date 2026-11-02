@@ -1,0 +1,6 @@
+<footer class="site-footer">
+    <span>{{ t('footer.contacts') }}:</span>
+    <a href="mailto:{{ contacts.email }}">{{ contacts.email }}</a>
+    <span class="dot">·</span>
+    <a href="tel:{{ contacts.phone | replace(' ', '') | replace('(', '') | replace(')', '') | replace('-', '') }}">{{ contacts.phone }}</a>
+</footer>

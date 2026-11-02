@@ -1,0 +1,14 @@
+<header class="topbar">
+    <a href="/" class="topbar-brand">
+        <span class="brand-icon">⛺</span>
+        <span>{{ t('app.name') }}</span>
+    </a>
+    <nav class="topnav">
+        <a href="/bookings" class="nav-btn">{{ t('nav.bookings') }}</a>
+        <a href="/settings" class="nav-btn">{{ t('nav.settings') }}</a>
+        <a href="/lang/{{ 'en' if lang == 'ru' else 'ru' }}" class="lang-switch">
+            {{ 'EN' if lang == 'ru' else 'RU' }}
+        </a>
+        <a href="/logout" class="btn btn-logout">{{ t('nav.logout') }}</a>
+    </nav>
+</header>

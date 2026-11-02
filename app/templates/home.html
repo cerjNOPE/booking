@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include "_header.html" %}
+
+<main class="page">
+    <section class="panel instructions">
+        <h1>{{ t('home.title') }}</h1>
+        <h2>{{ t('home.instructions_title') }}</h2>
+        <ol class="instruction-list">
+            <li>{{ t('home.instr_view') }}</li>
+            <li>{{ t('home.instr_book') }}</li>
+            <li>{{ t('home.instr_bookings') }}</li>
+            <li>{{ t('home.instr_cancel') }}</li>
+        </ol>
+    </section>
+
+    <section class="places-section">
+        <h2>{{ t('home.places') }}</h2>
+
+        {% if places %}
+        <div class="places-grid">
+            {% for place in places %}
+            <article class="place-card {% if not place.isActive %}place-inactive{% endif %}">
+                <div class="place-photo">
+                    <img
+                        src="{{ place_image(place) }}"
+                        alt="{{ place.address }}"
+                        loading="lazy"
+                        decoding="async"
+                        onerror="this.onerror=null;this.src='/static/img/placeholder.jpg';"
+                    >
+                </div>
+                <div class="place-body">
+                    <h3>{{ place.address }}</h3>
+                    <p class="place-capacity">{{ t('home.capacity', n=place.capacity) }}</p>
+                </div>
+                {% if place.isActive %}
+                <div class="place-action">
+                    <a class="btn btn-primary" href="/book?place_id={{ place.id }}">{{ t('home.book') }}</a>
+                </div>
+                {% else %}
+                <div class="place-unavailable">{{ t('home.unavailable') }}</div>
+                {% endif %}
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="empty-state">{{ t('home.no_places') }}</p>
+        {% endif %}
+    </section>
+</main>
+
+{% include "_footer.html" %}
+{% endblock %}

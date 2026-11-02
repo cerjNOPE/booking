@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include "_header.html" %}
+
+<main class="page">
+    <section class="panel">
+        <h1>{{ t('bookings.title') }}</h1>
+
+        {% if message %}<div class="alert alert-success" role="alert">{{ message }}</div>{% endif %}
+
+        {% if bookings %}
+        <ul class="booking-list">
+            {% for booking in bookings %}
+            <li class="booking-item">
+                <div class="booking-main">
+                    <div class="booking-number">{{ t('bookings.number', n=booking.booking_number) }}</div>
+                    <div class="booking-address">{{ booking.place.address }}</div>
+                    <div class="booking-dates">
+                        {{ booking.checkIn.strftime('%d.%m.%Y') }} — {{ booking.checkOut.strftime('%d.%m.%Y') }}
+                    </div>
+                    <div class="booking-meta">
+                        {{ t('bookings.guests') }}: {{ booking.guestsCount }}
+                        <span class="status status-{{ booking.status }}">{{ t('status.' ~ booking.status) }}</span>
+                    </div>
+                </div>
+                <div class="booking-actions">
+                    <a href="/bookings/{{ booking.id }}" class="btn btn-outline">{{ t('bookings.details') }}</a>
+                    {% if booking.status == 'active' %}
+                    <form action="/bookings/{{ booking.id }}/cancel" method="post" onsubmit="return confirm('{{ t('bookings.cancel_confirm') }}')">
+                        <button type="submit" class="btn btn-danger">{{ t('bookings.cancel') }}</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <div class="empty-state-box">
+            <h2>{{ t('bookings.empty') }}</h2>
+            <p>{{ t('bookings.empty_hint') }}</p>
+            <a href="/" class="btn btn-primary">{{ t('bookings.book_now') }}</a>
+        </div>
+        {% endif %}
+    </section>
+</main>
+
+{% include "_footer.html" %}
+{% endblock %}
